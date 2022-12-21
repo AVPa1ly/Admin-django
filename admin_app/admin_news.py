@@ -45,10 +45,48 @@ class InfoblockAdmin(admin.ModelAdmin):
             infoblockid__in=News.objects.filter(customerid=request.user.customerid).values('infoblockid')
         )
 
+class NewsCreationForm(forms.ModelForm):
+    class Meta:
+        model = News
+        fields = ('infoblockid',)
+
+class NewsChangeForm(forms.ModelForm):
+    class Meta:
+        model = News
+        fields = ('infoblockid',)
+
+
+class NewsAdmin(admin.ModelAdmin):
+    form = NewsChangeForm
+    add_form = NewsCreationForm
+
+    list_display = ('infoblockid',)
+    list_filter = ()
+    fieldsets = (
+        (None, {'fields': ('infoblockid',)}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('infoblockid',),
+        }),
+    )
+    search_fields = ('infoblockid',)
+    ordering = ('infoblockid',)
+    filter_horizontal = ()
+
+    def has_module_permission(self, request):
+        return not request.user.is_anonymous and request.user.is_content_maker_type
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(
+            customerid=request.user
+        )
+
     def save_model(self, request, obj, form, change):
         with transaction.atomic():
+            obj.customerid = request.user
             super().save_model(request, obj, form, change)
-            News.objects.create(customerid=request.user, infoblockid=obj)
 
 
 class PromocodeCreationForm(forms.ModelForm):
@@ -80,7 +118,7 @@ class PromocodeAdmin(admin.ModelAdmin):
     add_form = PromocodeCreationForm
 
     list_display = ('promocodevalue', 'discount', 'trackid', 'usecount')
-    list_filter = ('promocodevalue', 'discount', 'trackid', 'usecount')
+    list_filter = ('promocodevalue', 'discount', 'usecount')
     fieldsets = (
         (None, {'fields': ('promocodevalue', 'discount', 'trackid', 'usecount')}),
     )
