@@ -1,0 +1,1 @@
+web: gunicorn 'flexair_admin_django.wsgi'
