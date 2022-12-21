@@ -12,4 +12,4 @@ The app uses pretty much default layout and has reduced functionality compared t
 
 ## A short example of admin pannel over deployed server:
 
-![]()
+![](https://github.com/AVPa1ly/Admin-django/blob/main/Demo.gif)
