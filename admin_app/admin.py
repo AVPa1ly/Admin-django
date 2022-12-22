@@ -18,3 +18,5 @@ admin.site.register(Offer, OfferAdmin)
 admin.site.register(News, NewsAdmin)
 
 admin.site.site_header = 'Flexair Admin'
+admin.site.index_title = 'Flexair administration'
+admin.site.site_title = 'Flexair web administration'
